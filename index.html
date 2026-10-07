@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prueba Sandbox // Shopify Headless Storefront</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: '#10b981',
+              400: '#34d399',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="bg-[#0b0c10] text-zinc-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-black">
+
+  <!-- BARRA DE NAVEGACIÓN -->
+  <header class="sticky top-0 z-40 bg-[#0f1117]/80 backdrop-blur-md border-b border-white/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-emerald-400 flex items-center justify-center font-black text-black text-lg shadow-lg shadow-emerald-500/20">
+          S
+        </div>
+        <div>
+          <h1 class="text-sm font-bold tracking-tight text-white flex items-center gap-2">
+            <span>Shopify Headless Sandbox</span>
+            <span class="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">v1.0 Demo</span>
+          </h1>
+          <p class="text-[11px] text-zinc-400 font-mono" id="store-domain-label">Conectando...</p>
+        </div>
+      </div>
+
+      <!-- BOTÓN DEL CARRITO EN EL HEADER -->
+      <button id="open-cart-header-btn" class="relative flex items-center gap-2 px-3.5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all text-sm font-medium">
+        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <span>Carrito</span>
+        <span class="cart-badge-count hidden px-2 py-0.5 text-xs font-mono font-bold bg-emerald-500 text-black rounded-full">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
+
+    <!-- BANNER EXPLICATIVO DE PRUEBA GRATIS -->
+    <section class="bg-gradient-to-r from-emerald-950/40 via-zinc-900 to-zinc-900 border border-emerald-500/30 rounded-2xl p-5 sm:p-6 shadow-xl">
+      <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <h2 class="text-sm font-bold text-emerald-400 tracking-wide uppercase font-mono">Modo Sandbox Activo ($0 Costo) // Listo para Móvil</h2>
+          </div>
+          <p class="text-sm text-zinc-300">
+            Esta web consulta tu catálogo directamente mediante la <strong>Storefront API</strong>. Al presionar <em>«Proceder al Pago»</em>, saltarás al checkout cifrado de Shopify configurado para <strong>Venezuela</strong>.
+          </p>
+          <div class="flex flex-wrap items-center gap-2 text-xs text-zinc-400 pt-1">
+            <span class="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-2.5 py-1 rounded-lg font-mono">
+              🔑 Clave de la tienda: <strong class="text-white">tewvay</strong>
+            </span>
+            <span class="inline-flex items-center gap-1.5 bg-white/5 text-zinc-300 border border-white/10 px-2.5 py-1 rounded-lg">
+              📍 Destino: <strong>Venezuela</strong> (Estados activos)
+            </span>
+          </div>
+        </div>
+        <div class="bg-black/60 border border-white/10 rounded-xl p-3.5 text-xs font-mono text-zinc-400 shrink-0 space-y-1.5 min-w-[260px]">
+          <div class="text-emerald-400 font-bold flex items-center justify-between">
+            <span>💳 Tarjeta de prueba:</span>
+            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">Bogus Gateway</span>
+          </div>
+          <div>Número: <code class="text-white bg-white/10 px-1.5 py-0.5 rounded font-bold">1</code></div>
+          <div>Nombre: <code class="text-white bg-white/10 px-1.5 py-0.5 rounded">Cualquiera</code> | CVV: <code class="text-white bg-white/10 px-1.5 py-0.5 rounded">123</code></div>
+          <div>Expiración: <code class="text-white bg-white/10 px-1.5 py-0.5 rounded">12/28</code> (Cualquiera futura)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESTADO DE LA CONEXIÓN -->
+    <div id="connection-status" class="flex items-center justify-between p-3.5 bg-white/[0.02] border border-white/5 rounded-xl text-xs font-mono text-zinc-400">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Conexión GraphQL: <span id="api-status-text" class="text-white">Verificando...</span></span>
+      </div>
+      <span id="api-latency" class="text-zinc-500">-- ms</span>
+    </div>
+
+    <!-- SECCIÓN DE PRODUCTOS -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-white tracking-tight">Catálogo de Productos</h3>
+          <p class="text-xs text-zinc-400">Datos obtenidos en tiempo real desde tu tienda de Shopify.</p>
+        </div>
+        <button id="refresh-products-btn" class="text-xs text-zinc-400 hover:text-white px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Recargar</span>
+        </button>
+      </div>
+
+      <!-- GRID DE PRODUCTOS -->
+      <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Placeholder mientras carga -->
+        <div class="p-6 bg-white/[0.02] border border-white/5 rounded-2xl animate-pulse space-y-4">
+          <div class="h-48 bg-white/5 rounded-xl"></div>
+          <div class="h-4 bg-white/5 rounded w-3/4"></div>
+          <div class="h-3 bg-white/5 rounded w-1/2"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PIE DE PÁGINA -->
+  <footer class="border-t border-white/10 py-6 text-center text-xs text-zinc-500 font-mono">
+    <p>Shopify Storefront Headless Architecture // Conectado a <span class="text-zinc-400" id="footer-domain">jolex-sandbox.myshopify.com</span></p>
+  </footer>
+
+  <!-- SCRIPT DE APLICACIÓN -->
+  <script type="module">
+    import { STORE_CONFIG } from './store.config.js';
+    import { UniversalCart } from './cart-engine.js';
+
+    // Inicializa el motor de carrito
+    const cart = new UniversalCart();
+
+    // Actualiza etiquetas de la tienda
+    document.getElementById('store-domain-label').textContent = STORE_CONFIG.shopDomain;
+    document.getElementById('footer-domain').textContent = STORE_CONFIG.shopDomain;
+
+    // Botón para abrir el carrito
+    document.getElementById('open-cart-header-btn').onclick = () => cart.open();
+
+    // Cargar productos desde Shopify
+    async function loadCatalog() {
+      const grid = document.getElementById('products-grid');
+      const statusText = document.getElementById('api-status-text');
+      const latencyText = document.getElementById('api-latency');
+      const startTime = performance.now();
+
+      try {
+        const { shop, products } = await UniversalCart.fetchProducts();
+        const latency = Math.round(performance.now() - startTime);
+
+        statusText.textContent = `200 OK (${shop.name})`;
+        statusText.className = 'text-emerald-400 font-bold';
+        latencyText.textContent = `${latency} ms`;
+
+        if (products.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full p-8 text-center bg-white/[0.02] border border-white/10 rounded-2xl space-y-3">
+              <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <h4 class="text-base font-bold text-white">Catálogo conectado pero sin productos aún</h4>
+              <p class="text-xs text-zinc-400 max-w-md mx-auto">
+                La conexión con tu tienda <strong>${STORE_CONFIG.shopDomain}</strong> funciona perfectamente. Ve a tu panel de Shopify y añade al menos un producto para verlo reflejado aquí.
+              </p>
+            </div>
+          `;
+          return;
+        }
+
+        grid.innerHTML = products.map(prod => {
+          const firstVariant = prod.variants.edges[0]?.node;
+          const price = firstVariant?.price?.amount || '0.00';
+          const currency = firstVariant?.price?.currencyCode || 'USD';
+          const image = prod.featuredImage?.url || 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80';
+          const variantId = firstVariant?.id;
+
+          return `
+            <div class="group bg-[#11131a] border border-white/10 hover:border-emerald-500/40 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col hover:shadow-xl hover:shadow-emerald-500/5">
+              <div class="aspect-square bg-zinc-900 overflow-hidden relative">
+                <img src="${image}" alt="${prod.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-3 right-3 text-[11px] font-mono font-bold bg-black/70 backdrop-blur-md text-emerald-400 border border-white/10 px-2.5 py-1 rounded-full">
+                  $${parseFloat(price).toFixed(2)} ${currency}
+                </span>
+              </div>
+              <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                <div>
+                  <h4 class="text-base font-bold text-white group-hover:text-emerald-400 transition-colors">${prod.title}</h4>
+                  <p class="text-xs text-zinc-400 line-clamp-2 mt-1">${prod.description || 'Producto de prueba sincronizado vía Storefront API.'}</p>
+                </div>
+                <button 
+                  class="add-to-cart-btn w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-xs shadow-md shadow-emerald-500/10 active:scale-[0.98]"
+                  data-variant-id="${variantId}"
+                  data-product-id="${prod.id}"
+                  data-title="${prod.title}"
+                  data-price="${price}"
+                  data-image="${image}"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>Añadir al Carrito</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Listeners para botones de agregar
+        grid.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+          btn.onclick = () => {
+            cart.addItem({
+              variantId: btn.dataset.variantId,
+              productId: btn.dataset.productId,
+              title: btn.dataset.title,
+              price: btn.dataset.price,
+              image: btn.dataset.image,
+              quantity: 1,
+            });
+          };
+        });
+
+      } catch (err) {
+        statusText.textContent = `Error: ${err.message}`;
+        statusText.className = 'text-red-400 font-bold';
+        grid.innerHTML = `
+          <div class="col-span-full p-6 bg-red-950/20 border border-red-500/30 rounded-2xl text-red-300 text-xs font-mono">
+            Error cargando catálogo: ${err.message}
+          </div>
+        `;
+      }
+    }
+
+    document.getElementById('refresh-products-btn').onclick = loadCatalog;
+    loadCatalog();
+  </script>
+</body>
+</html>
